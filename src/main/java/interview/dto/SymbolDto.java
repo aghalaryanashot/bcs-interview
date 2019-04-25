@@ -1,4 +1,4 @@
-package interview.Dto;
+package interview.dto;
 
 import lombok.Data;
 
