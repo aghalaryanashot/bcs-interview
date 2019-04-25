@@ -24,7 +24,7 @@ public class SwaggerConfig {
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("Организации")
-                .description("Сервис работы с анкетами организаций").build();
+        return new ApiInfoBuilder().title("BCS")
+                .description("Сервис работы с акциями").build();
     }
 }

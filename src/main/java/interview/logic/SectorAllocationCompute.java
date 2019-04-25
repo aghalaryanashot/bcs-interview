@@ -9,10 +9,10 @@ public class SectorAllocationCompute {
 
     public static ValueAndAllocationsDto finalRated(StockPriceValue stockPriceValue) {
         ArrayList<AllocationsDto> allocationsList = new ArrayList<>();
-        for (IexStockPriceDto obj:stockPriceValue.getListStockPrice()) {
-            String sector = obj.getSector();
-            double price = obj.getLatestPrice();
-            double proportion = obj.getLatestPrice() / stockPriceValue.getValue();
+        for (Map.Entry<String,Double> obj:stockPriceValue.getMap().entrySet()) {
+            String sector = obj.getKey();
+            double price = obj.getValue();
+            double proportion = obj.getValue() / stockPriceValue.getValue();
             allocationsList.add(new AllocationsDto(sector, price, proportion));
         }
         return new ValueAndAllocationsDto(stockPriceValue.getValue(), allocationsList);

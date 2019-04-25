@@ -24,19 +24,17 @@ public class StockInfoDao {
     }
 
     public StockPriceValue getStockPrice(StocksDto stocks) {
-        List<IexStockPriceDto> list = new ArrayList<>();
         double value = 0;
+        Map<String, Double> sectorToValue = new HashMap<>();
         for (SymbolDto symbolDto : stocks.getStocks()) {
             IexStockPriceDto iexStockPriceDto =
                     restTemplate.getForEntity(API_URL, IexStockPriceDto.class, symbolDto.getSymbol()).getBody();
             iexStockPriceDto.setLatestPrice(iexStockPriceDto.getLatestPrice() * symbolDto.getVolume());
             value += iexStockPriceDto.getLatestPrice() * symbolDto.getVolume();
-            if(list.contains(iexStockPriceDto)){
-            }
-            list.add(iexStockPriceDto);
-
+            sectorToValue.compute(iexStockPriceDto.getSector(),(k, v) -> (v == null ? 0 : v) +
+                    iexStockPriceDto.getLatestPrice() * symbolDto.getVolume());
         }
-        StockPriceValue stockPriceValue = new StockPriceValue(value, list);
+        StockPriceValue stockPriceValue = new StockPriceValue(value, sectorToValue);
         return stockPriceValue;
     }
 }
