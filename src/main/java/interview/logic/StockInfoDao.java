@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
@@ -29,12 +27,12 @@ public class StockInfoDao {
         for (SymbolDto symbolDto : stocks.getStocks()) {
             IexStockPriceDto iexStockPriceDto =
                     restTemplate.getForEntity(API_URL, IexStockPriceDto.class, symbolDto.getSymbol()).getBody();
+            assert iexStockPriceDto != null;
             iexStockPriceDto.setLatestPrice(iexStockPriceDto.getLatestPrice() * symbolDto.getVolume());
             value += iexStockPriceDto.getLatestPrice() * symbolDto.getVolume();
-            sectorToValue.compute(iexStockPriceDto.getSector(),(k, v) -> (v == null ? 0 : v) +
+            sectorToValue.compute(iexStockPriceDto.getSector(), (k, v) -> (v == null ? 0 : v) +
                     iexStockPriceDto.getLatestPrice() * symbolDto.getVolume());
         }
-        StockPriceValue stockPriceValue = new StockPriceValue(value, sectorToValue);
-        return stockPriceValue;
+        return new StockPriceValue(value, sectorToValue);
     }
 }
